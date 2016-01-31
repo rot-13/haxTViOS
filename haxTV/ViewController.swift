@@ -18,8 +18,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         VgcManager.loggerUseNSLog = true
-        VgcManager.startAs(.Peripheral, appIdentifier: "HaxTV", includesPeerToPeer: true)
-        VgcManager.peripheral.deviceInfo = DeviceInfo(deviceUID: "", vendorName: "", attachedToDevice: false, profileType: .ExtendedGamepad, controllerType: .Software, supportsMotion: false)
+        VgcManager.startAs(.Peripheral, appIdentifier: "haxtv", includesPeerToPeer: true)
+        VgcManager.peripheral.deviceInfo = DeviceInfo(deviceUID: "", vendorName: "shay", attachedToDevice: false, profileType: .ExtendedGamepad, controllerType: .Software, supportsMotion: false)
         
         peripheralControlPadView = CustomPadView(vc: self)
         
