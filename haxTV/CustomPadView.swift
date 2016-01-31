@@ -24,11 +24,6 @@ public class CustomPadView: NSObject {
     public var controlOverlay: UIView!
     var controlLabel: UILabel!
     var activityIndicator : UIActivityIndicatorView!
-    var leftShoulderButton: VgcButton!
-    var rightShoulderButton: VgcButton!
-    var leftTriggerButton: VgcButton!
-    var rightTriggerButton: VgcButton!
-    var centerTriggerButton: VgcButton!
     var playerIndexLabel: UILabel!
     var keyboardTextField: UITextField!
     var keyboardControlView: UIView!
@@ -58,9 +53,7 @@ public class CustomPadView: NSObject {
         flashView.alpha = 0
         flashView.userInteractionEnabled = false
         parentView.addSubview(flashView)
-        
-        let buttonSpacing: CGFloat = 1.0
-        
+ 
         parentView.backgroundColor = UIColor.init(red:147, green:158, blue:127, alpha: 1.0)
         let dpadSize = parentView.bounds.size.height * 0.50
         let lightBlackColor = UIColor.init(red: 0.08, green: 0.08, blue: 0.08, alpha: 1.0)
@@ -76,15 +69,6 @@ public class CustomPadView: NSObject {
         parentView.addSubview(leftThumbstickPad)
         
         let buttonHeight = parentView.bounds.size.height * 0.20
-        
-        let aButton = VgcButton(frame: CGRect(x: 0, y: parentView.bounds.size.height - (buttonHeight * 2) - 20, width: (parentView.bounds.width) - buttonSpacing, height: buttonHeight), element: elements.buttonA)
-        aButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleRightMargin]
-        aButton.nameLabel.font = UIFont(name: aButton.nameLabel.font.fontName, size: 40)
-        aButton.valueLabel.font = UIFont(name: aButton.valueLabel.font.fontName, size: 20)
-        aButton.baseGrayShade = 0.08
-        aButton.nameLabel.textColor = UIColor.lightGrayColor()
-        aButton.valueLabel.textColor = UIColor.lightGrayColor()
-        parentView.addSubview(aButton)
         
         let xButton = VgcButton(frame: CGRect(x: 0, y: parentView.bounds.size.height - buttonHeight - 10, width: parentView.bounds.width, height: buttonHeight), element: elements.buttonX)
         xButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin]
