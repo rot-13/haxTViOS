@@ -29,22 +29,15 @@ public class CustomPadView: NSObject {
     var keyboardControlView: UIView!
     var keyboardLabel: UILabel!
     public var flashView: UIImageView!
-    public var viewController: UIViewController!
     
     public var serviceSelectorView: ServiceSelectorView!
     
-    @objc public init(vc: UIViewController) {
-        
+     public init(vc: UIViewController) {
         super.init()
-        
-        viewController = vc
-        parentView = viewController.view
+        parentView = vc.view
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "peripheralDidDisconnect:", name: VgcPeripheralDidDisconnectNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "peripheralDidConnect:", name: VgcPeripheralDidConnectNotification, object: nil)
-        
-        // Notification that a player index has been set
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotPlayerIndex:", name: VgcNewPlayerIndexNotification, object: nil)
         
         parentView.backgroundColor = UIColor.darkGrayColor()
         
@@ -56,16 +49,11 @@ public class CustomPadView: NSObject {
  
         parentView.backgroundColor = UIColor.init(red:147, green:158, blue:127, alpha: 1.0)
         let dpadSize = parentView.bounds.size.height * 0.50
-        let lightBlackColor = UIColor.init(red: 0.08, green: 0.08, blue: 0.08, alpha: 1.0)
         
         let leftThumbstickPad = VgcStick(frame: CGRect(x: (parentView.bounds.size.width - dpadSize) * 0.50, y: 24, width: dpadSize, height: parentView.bounds.size.height * 0.50), xElement: elements.dpadXAxis, yElement: elements.dpadYAxis)
-        leftThumbstickPad.nameLabel.text = "dpad"
-        leftThumbstickPad.nameLabel.textColor = UIColor.lightGrayColor()
-        leftThumbstickPad.nameLabel.font = UIFont(name: leftThumbstickPad.nameLabel.font.fontName, size: 15)
-        leftThumbstickPad.valueLabel.textColor = UIColor.lightGrayColor()
-        leftThumbstickPad.valueLabel.font = UIFont(name: leftThumbstickPad.nameLabel.font.fontName, size: 15)
-        leftThumbstickPad.backgroundColor = lightBlackColor
-        leftThumbstickPad.controlView.backgroundColor = lightBlackColor
+ 
+        leftThumbstickPad.backgroundColor = UIColor.redColor()
+        leftThumbstickPad.controlView.backgroundColor = UIColor.blackColor()
         parentView.addSubview(leftThumbstickPad)
         
         let buttonHeight = parentView.bounds.size.height * 0.20
@@ -107,7 +95,7 @@ public class CustomPadView: NSObject {
         
     }
     
-    @objc func peripheralDidConnect(notification: NSNotification) {
+     func peripheralDidConnect(notification: NSNotification) {
         vgcLogDebug("Animating control overlay up")
         UIView.animateWithDuration(animationSpeed, delay: 0.0, options: .CurveEaseIn, animations: {
             self.controlOverlay.frame = CGRect(x: 0, y: -self.parentView.bounds.size.height, width: self.parentView.bounds.size.width, height: self.parentView.bounds.size.height)
@@ -119,7 +107,7 @@ public class CustomPadView: NSObject {
     }
     
     #if !os(tvOS)
-    @objc func peripheralDidDisconnect(notification: NSNotification) {
+     func peripheralDidDisconnect(notification: NSNotification) {
         vgcLogDebug("Animating control overlay down")
         UIView.animateWithDuration(animationSpeed, delay: 0.0, options: .CurveEaseIn, animations: {
             self.controlOverlay.frame = CGRect(x: 0, y: 0, width: self.parentView.bounds.size.width, height: self.parentView.bounds.size.height)
@@ -129,21 +117,7 @@ public class CustomPadView: NSObject {
     }
     #endif
     
-    @objc func gotPlayerIndex(notification: NSNotification) {
-        
-        let playerIndex: Int = notification.object as! Int
-        if playerIndexLabel != nil { playerIndexLabel.text = "Player \(playerIndex + 1)" }
-    }
-    
-    @objc func playerTappedToPause(sender: AnyObject) {
-        
-        // Pause toggles, so we send both states at once
-        elements.pauseButton.value = 1.0
-        VgcManager.peripheral.sendElementState(elements.pauseButton)
-        
-    }
-    
-    @objc func playerTappedToShowKeyboard(sender: AnyObject) {
+    func playerTappedToShowKeyboard(sender: AnyObject) {
         
         if VgcManager.iCadeControllerMode != .Disabled { return }
         
@@ -383,8 +357,6 @@ class VgcStick: UIView {
     let xElement: Element!
     let yElement: Element!
     
-    var nameLabel: UILabel!
-    var valueLabel: UILabel!
     var controlView: UIView!
     var touchesView: UIView!
     
@@ -404,19 +376,6 @@ class VgcStick: UIView {
         
         super.init(frame: frame)
         
-        nameLabel = UILabel(frame: CGRect(x: 0, y: frame.size.height - 20, width: frame.size.width, height: 15))
-        nameLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight]
-        nameLabel.textAlignment = .Center
-        nameLabel.font = UIFont(name: nameLabel.font.fontName, size: 10)
-        self.addSubview(nameLabel)
-        
-        valueLabel = UILabel(frame: CGRect(x: 10, y: 10, width: frame.size.width - 20, height: 15))
-        valueLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleTopMargin]
-        valueLabel.text = "0.0/0.0"
-        valueLabel.font = UIFont(name: valueLabel.font.fontName, size: 10)
-        valueLabel.textAlignment = .Center
-        self.addSubview(valueLabel)
-        
         let controlViewSide = frame.height * 0.40
         controlView = UIView(frame: CGRect(x: controlViewSide, y: controlViewSide, width: controlViewSide, height: controlViewSide))
         controlView.layer.cornerRadius = controlView.bounds.size.width / 2
@@ -427,16 +386,9 @@ class VgcStick: UIView {
         self.layer.cornerRadius = frame.width / 2
         
         self.centerController(0.0)
-        
-        if VgcManager.peripheral.deviceInfo.profileType == .MicroGamepad {
-            touchesView = self
-            controlView.userInteractionEnabled = false
-            controlView.hidden = true
-        } else {
-            touchesView = controlView
-            controlView.userInteractionEnabled = true
-            controlView.hidden = false
-        }
+   
+        touchesView = controlView
+        controlView.userInteractionEnabled = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -476,9 +428,6 @@ class VgcStick: UIView {
             yElement.value = Float(yValue)
             VgcManager.peripheral.sendElementState(xElement)
             VgcManager.peripheral.sendElementState(yElement)
-            
-            valueLabel.text = "\(round(xValue * 100.0) / 100)/\(round(yValue * 100.0) / 100)"
-            
         }
         
     }
@@ -508,343 +457,8 @@ class VgcStick: UIView {
         UIView.animateWithDuration(duration, delay: 0.0, options: .CurveEaseIn, animations: {
             self.controlView.center = CGPoint(x: ((self.bounds.size.height * 0.50)), y: ((self.bounds.size.width * 0.50)))
             }, completion: { finished in
-                self.valueLabel.text = "0/0"
+                
         })
-    }
-}
-
-class VgcAbxyButtonPad: UIView {
-    
-    let elements = VgcManager.elements
-    var aButton: VgcButton!
-    var bButton: VgcButton!
-    var xButton: VgcButton!
-    var yButton: VgcButton!
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override init(frame: CGRect) {
-        
-        super.init(frame: frame)
-        
-        self.backgroundColor = peripheralBackgroundColor
-        
-        let buttonWidth = frame.size.width * 0.33333
-        let buttonHeight = frame.size.height * 0.33333
-        let buttonMargin: CGFloat = 10.0
-        
-        let fontSize: CGFloat = 35.0
-        
-        yButton = VgcButton(frame: CGRect(x: buttonWidth, y: buttonMargin, width: buttonWidth, height: buttonHeight), element: elements.buttonY)
-        yButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleRightMargin, UIViewAutoresizing.FlexibleBottomMargin]
-        yButton.nameLabel.textAlignment = .Center
-        yButton.valueLabel.textAlignment = .Center
-        yButton.layer.cornerRadius =  yButton.bounds.size.width / 2
-        yButton.nameLabel.textColor = UIColor.blueColor()
-        yButton.baseGrayShade = 0.0
-        yButton.valueLabel.textColor = UIColor.whiteColor()
-        yButton.nameLabel.font = UIFont(name: yButton.nameLabel.font.fontName, size: fontSize)
-        self.addSubview(yButton)
-        
-        xButton = VgcButton(frame: CGRect(x: buttonMargin, y: buttonHeight, width: buttonWidth, height: buttonHeight), element: elements.buttonX)
-        xButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleRightMargin, UIViewAutoresizing.FlexibleBottomMargin]
-        xButton.nameLabel.textAlignment = .Center
-        xButton.valueLabel.textAlignment = .Center
-        xButton.layer.cornerRadius =  xButton.bounds.size.width / 2
-        xButton.nameLabel.textColor = UIColor.yellowColor()
-        xButton.baseGrayShade = 0.0
-        xButton.valueLabel.textColor = UIColor.whiteColor()
-        xButton.nameLabel.font = UIFont(name: xButton.nameLabel.font.fontName, size: fontSize)
-        self.addSubview(xButton)
-        
-        bButton = VgcButton(frame: CGRect(x: frame.size.width - buttonWidth - buttonMargin, y: buttonHeight, width: buttonWidth, height: buttonHeight), element: elements.buttonB)
-        bButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleBottomMargin]
-        bButton.nameLabel.textAlignment = .Center
-        bButton.valueLabel.textAlignment = .Center
-        bButton.layer.cornerRadius =  bButton.bounds.size.width / 2
-        bButton.nameLabel.textColor = UIColor.greenColor()
-        bButton.baseGrayShade = 0.0
-        bButton.valueLabel.textColor = UIColor.whiteColor()
-        bButton.nameLabel.font = UIFont(name: bButton.nameLabel.font.fontName, size: fontSize)
-        self.addSubview(bButton)
-        
-        aButton = VgcButton(frame: CGRect(x: buttonWidth, y: buttonHeight * 2.0 - buttonMargin, width: buttonWidth, height: buttonHeight), element: elements.buttonA)
-        aButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleRightMargin, UIViewAutoresizing.FlexibleTopMargin]
-        aButton.nameLabel.textAlignment = .Center
-        aButton.valueLabel.textAlignment = .Center
-        aButton.layer.cornerRadius =  aButton.bounds.size.width / 2
-        aButton.nameLabel.textColor = UIColor.redColor()
-        aButton.baseGrayShade = 0.0
-        aButton.valueLabel.textColor = UIColor.whiteColor()
-        aButton.nameLabel.font = UIFont(name: aButton.nameLabel.font.fontName, size: fontSize)
-        self.addSubview(aButton)
-        
-        
-    }
-}
-
-public class ElementDebugView: UIView {
-    
-    var elementLabelLookup = Dictionary<Int, UILabel>()
-    var elementBackgroundLookup = Dictionary<Int, UIView>()
-    var controllerVendorName: UILabel!
-    var scrollView: UIScrollView!
-    var controller: VgcController!
-    var titleRegion: UIView!
-    var imageView: UIImageView!
-    
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    public init(frame: CGRect, controller: VgcController) {
-        
-        self.controller = controller
-        
-        super.init(frame: frame)
-        
-        let debugViewTapGR = UITapGestureRecognizer(target: self, action: "receivedDebugViewTap")
-        
-        let debugViewDoubleTapGR = UITapGestureRecognizer(target: self, action: "receivedDebugViewDoubleTap")
-        debugViewDoubleTapGR.numberOfTapsRequired = 2
-        self.gestureRecognizers = [debugViewTapGR, debugViewDoubleTapGR]
-        
-        debugViewTapGR.requireGestureRecognizerToFail(debugViewDoubleTapGR)
-        
-        self.backgroundColor = UIColor.whiteColor()
-        
-        //self.layer.cornerRadius = 15
-        self.layer.shadowOffset = CGSizeMake(5, 5)
-        self.layer.shadowColor = UIColor.blackColor().CGColor
-        self.layer.shadowRadius = 3.0
-        self.layer.shadowOpacity = 0.3
-        self.layer.shouldRasterize = true
-        self.layer.rasterizationScale = UIScreen.mainScreen().scale
-        
-        titleRegion = UIView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 140))
-        titleRegion.autoresizingMask = [UIViewAutoresizing.FlexibleWidth]
-        titleRegion.backgroundColor = UIColor.lightGrayColor()
-        titleRegion.clipsToBounds = true
-        self.addSubview(titleRegion)
-        
-        imageView = UIImageView(frame: CGRect(x: self.bounds.size.width - 110, y: 150, width: 100, height: 100))
-        imageView.contentMode = .ScaleAspectFit
-        self.addSubview(imageView)
-        
-        controllerVendorName = UILabel(frame: CGRect(x: 0, y: 0, width: titleRegion.frame.size.width, height: 50))
-        controllerVendorName.backgroundColor = UIColor.lightGrayColor()
-        controllerVendorName.autoresizingMask = [UIViewAutoresizing.FlexibleWidth]
-        controllerVendorName.text = controller.deviceInfo.vendorName
-        controllerVendorName.textAlignment = .Center
-        controllerVendorName.font = UIFont(name: controllerVendorName.font.fontName, size: 20)
-        controllerVendorName.clipsToBounds = true
-        titleRegion.addSubview(controllerVendorName)
-        
-        var labelHeight: CGFloat = 20.0
-        let deviceDetailsFontSize: CGFloat = 14.0
-        let leftMargin: CGFloat = 40.0
-        var yPosition = controllerVendorName.bounds.size.height
-        
-        let controllerTypeLabel = UILabel(frame: CGRect(x: leftMargin, y: yPosition, width: titleRegion.frame.size.width - 50, height: labelHeight))
-        controllerTypeLabel.backgroundColor = UIColor.lightGrayColor()
-        controllerTypeLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth]
-        controllerTypeLabel.text = "Controller Type: " + controller.deviceInfo.controllerType.description
-        controllerTypeLabel.textAlignment = .Left
-        controllerTypeLabel.font = UIFont(name: controllerTypeLabel.font.fontName, size: deviceDetailsFontSize)
-        titleRegion.addSubview(controllerTypeLabel)
-        
-        yPosition += labelHeight
-        let profileTypeLabel = UILabel(frame: CGRect(x: leftMargin, y: yPosition, width: titleRegion.frame.size.width - 50, height: labelHeight))
-        profileTypeLabel.backgroundColor = UIColor.lightGrayColor()
-        profileTypeLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth]
-        profileTypeLabel.text = "Profile Type: " + controller.profileType.description
-        profileTypeLabel.textAlignment = .Left
-        profileTypeLabel.font = UIFont(name: profileTypeLabel.font.fontName, size: deviceDetailsFontSize)
-        titleRegion.addSubview(profileTypeLabel)
-        
-        yPosition += labelHeight
-        
-        let attachedLabel = UILabel(frame: CGRect(x: leftMargin, y: yPosition, width: titleRegion.frame.size.width - 50, height: labelHeight))
-        attachedLabel.backgroundColor = UIColor.lightGrayColor()
-        attachedLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth]
-        attachedLabel.text = "Attached to Device: " + "\(controller.deviceInfo.attachedToDevice)"
-        attachedLabel.textAlignment = .Left
-        attachedLabel.font = UIFont(name: profileTypeLabel.font.fontName, size: deviceDetailsFontSize)
-        titleRegion.addSubview(attachedLabel)
-        
-        yPosition += labelHeight
-    
-        
-        // Scrollview allows the element values to scroll vertically, especially important on phones
-        scrollView = UIScrollView(frame: CGRect(x: 0, y: titleRegion.bounds.size.height + 10, width: frame.size.width, height: frame.size.height - titleRegion.bounds.size.height - 10))
-        scrollView.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleHeight]
-        self.addSubview(scrollView)
-        
-        labelHeight = CGFloat(22.0)
-        yPosition = CGFloat(10.0)
-        
-        if deviceIsTypeOfBridge() && VgcManager.bridgeRelayOnly {
-            let elementLabel = UILabel(frame: CGRect(x: 10, y: yPosition, width: frame.size.width - 20, height: labelHeight * 2))
-            elementLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleRightMargin]
-            elementLabel.text = "In relay-only mode - no data will display here."
-            elementLabel.textAlignment = .Center
-            elementLabel.font = UIFont(name: controllerVendorName.font.fontName, size: 16)
-            elementLabel.numberOfLines = 2
-            scrollView.addSubview(elementLabel)
-            
-            return
-        }
-        
-        for element in VgcManager.elements.elementsForController(controller) {
-            
-            let elementBackground = UIView(frame: CGRect(x: (frame.size.width * 0.50) + 15, y: yPosition, width: 0, height: labelHeight))
-            elementBackground.backgroundColor = UIColor.lightGrayColor()
-            elementBackground.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleLeftMargin]
-            scrollView.addSubview(elementBackground)
-            
-            let elementLabel = UILabel(frame: CGRect(x: 10, y: yPosition, width: frame.size.width * 0.50, height: labelHeight))
-            elementLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleRightMargin]
-            elementLabel.text = "\(element.name):"
-            elementLabel.textAlignment = .Right
-            elementLabel.font = UIFont(name: controllerVendorName.font.fontName, size: 16)
-            scrollView.addSubview(elementLabel)
-            
-            let elementValue = UILabel(frame: CGRect(x: (frame.size.width * 0.50) + 15, y: yPosition, width: frame.size.width * 0.50, height: labelHeight))
-            elementValue.autoresizingMask = [UIViewAutoresizing.FlexibleWidth, UIViewAutoresizing.FlexibleLeftMargin]
-            elementValue.text = "0"
-            elementValue.font = UIFont(name: controllerVendorName.font.fontName, size: 16)
-            scrollView.addSubview(elementValue)
-            
-            elementBackgroundLookup[element.identifier] = elementBackground
-            
-            elementLabelLookup[element.identifier] = elementValue
-            
-            yPosition += labelHeight
-            
-        }
-        
-        scrollView.contentSize = CGSize(width: frame.size.width, height: yPosition + 40)
-        
-    }
-    
-    // Demonstrate bidirectional communication using a simple tap on the
-    // Central debug view to send a message to one or all Peripherals.
-    // Use of a custom element is demonstrated; both standard and custom
-    // are supported.
-    public func receivedDebugViewTap() {
-        
-        // Test vibrate using standard system element
-        controller.vibrateDevice()
-        
-        // Test vibrate using custom element
-        /*
-        let element = controller.elements.custom[CustomElementType.VibrateDevice.rawValue]!
-        element.value = 1
-        VgcController.sendElementStateToAllPeripherals(element)
-        */
-    }
-    
-    public func receivedDebugViewDoubleTap() {
-        
-        let imageElement = VgcManager.elements.elementFromIdentifier(ElementType.Image.rawValue)
-        let imageData = UIImageJPEGRepresentation(UIImage(named: "digit.jpg")!, 1.0)
-        imageElement.value = imageData!
-        imageElement.clearValueAfterTransfer = true
-        controller.sendElementStateToPeripheral(imageElement)
-    }
-    
-    public func receivedDebugViewTripleTap() {
-        
-        let imageElement = VgcManager.elements.elementFromIdentifier(ElementType.Image.rawValue)
-        let imageData = UIImageJPEGRepresentation(UIImage(named: "digit.jpg")!, 1.0)
-        imageElement.value = imageData!
-        imageElement.clearValueAfterTransfer = true
-        controller.sendElementStateToPeripheral(imageElement)
-        
-        // Test string mode
-        let keyboard = controller.elements.custom[CustomElementType.Keyboard.rawValue]!
-        keyboard.value = "1 2 3 4 5 6 7 8"
-        keyboard.value = "Before newline\nAfter newline\n\n\n"
-        controller.sendElementStateToPeripheral(keyboard)
-        
-    }
-    
-    // The Central is in charge of managing the toggled state of the
-    // pause button on a controller; we're doing that here just using
-    // the current background color to track state.
-    public func togglePauseState() {
-        if (self.backgroundColor == UIColor.whiteColor()) {
-            self.backgroundColor = UIColor.lightGrayColor()
-        } else {
-            self.backgroundColor = UIColor.whiteColor()
-        }
-    }
-    
-    // Instead of refreshing individual values by setting up handlers, we use a
-    // global handler and refresh all the values.
-    public func refresh(controller: VgcController) {
-        
-        self.controllerVendorName.text = controller.deviceInfo.vendorName
-        
-        for element in controller.elements.elementsForController(controller) {
-            if let label = self.elementLabelLookup[element.identifier] {
-                let keypath = element.getterKeypath(controller)
-                var value: AnyObject
-                if element.type == .Custom {
-                    if element.dataType == .Data {
-                        value = ""
-                    } else {
-                        value = (controller.elements.custom[element.identifier]?.value)!
-                    }
-                    if element.dataType == .String && value as! NSObject == 0 { value = "" }
-                } else if keypath != "" {
-                    value = controller.valueForKeyPath(keypath)!
-                } else {
-                    value = ""
-                }
-                // PlayerIndex uses enumerated values that are offset by 1
-                if element == controller.elements.playerIndex {
-                    label.text = "\(controller.playerIndex.rawValue + 1)"
-                    continue
-                }
-                label.text = "\(value)"
-                let stringValue = "\(value)"
-                
-                // Pause will be empty
-                if stringValue == "" { continue }
-                
-                if element.dataType == .Float {
-                    
-                    let valFloat = Float(stringValue)! as Float
-                    
-                    if let backgroundView = self.elementBackgroundLookup[element.identifier] {
-                        var width = label.bounds.size.width * CGFloat(valFloat)
-                        if (width > 0 && width < 0.1) || (width < 0 && width > -0.1) { width = 0 }
-                        backgroundView.frame = CGRect(x: (label.bounds.size.width) + 15, y: backgroundView.frame.origin.y, width: width, height: backgroundView.bounds.size.height)
-                    }
-                    
-                } else if element.dataType == .Int {
-                    
-                    let valInt = Int(stringValue)! as Int
-                    
-                    if let backgroundView = self.elementBackgroundLookup[element.identifier] {
-                        var width = label.bounds.size.width * CGFloat(valInt)
-                        if (width > 0 && width < 0.1) || (width < 0 && width > -0.1) { width = 0 }
-                        backgroundView.frame = CGRect(x: (label.bounds.size.width) + 15, y: backgroundView.frame.origin.y, width: width, height: backgroundView.bounds.size.height)
-                    }
-                } else if element.dataType == .String {
-                    
-                    if stringValue != "" {
-                        label.backgroundColor = UIColor.lightGrayColor()
-                    } else {
-                        label.backgroundColor = UIColor.clearColor()
-                    }
-                    
-                }
-            }
-        }
     }
 }
 
