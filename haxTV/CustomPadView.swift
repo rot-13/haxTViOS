@@ -23,9 +23,6 @@ public class CustomPadView: NSObject {
     public var parentView: UIView!
     public var controlOverlay: UIView!
     var controlLabel: UILabel!
-    #if !os(tvOS)
-    var motionSwitch : UISwitch!
-    #endif
     var activityIndicator : UIActivityIndicatorView!
     var leftShoulderButton: VgcButton!
     var rightShoulderButton: VgcButton!
@@ -63,212 +60,42 @@ public class CustomPadView: NSObject {
         parentView.addSubview(flashView)
         
         let buttonSpacing: CGFloat = 1.0
-        let buttonHeight: CGFloat = (0.15 * parentView.bounds.size.height)
         
-        let stickSideSize = parentView.bounds.size.height * 0.25
-        var marginSize: CGFloat = parentView.bounds.size.width * 0.03
+        parentView.backgroundColor = UIColor.init(red:147, green:158, blue:127, alpha: 1.0)
+        let dpadSize = parentView.bounds.size.height * 0.50
+        let lightBlackColor = UIColor.init(red: 0.08, green: 0.08, blue: 0.08, alpha: 1.0)
         
-        if VgcManager.peripheral.deviceInfo.profileType != .MicroGamepad {
-            
-            leftShoulderButton = VgcButton(frame: CGRect(x: 0, y: 0, width: (parentView.bounds.width * 0.50) - buttonSpacing, height: buttonHeight), element: elements.leftShoulder)
-            leftShoulderButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleRightMargin]
-            parentView.addSubview(leftShoulderButton)
-            
-            rightShoulderButton = VgcButton(frame: CGRect(x: (parentView.bounds.width * 0.50), y: 0, width: (parentView.bounds.width * 0.50) - buttonSpacing, height: buttonHeight), element: elements.rightShoulder)
-            rightShoulderButton.valueLabel.textAlignment = .Left
-            rightShoulderButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin]
-            parentView.addSubview(rightShoulderButton)
-            
-            leftTriggerButton = VgcButton(frame: CGRect(x: 0, y: buttonHeight + buttonSpacing, width: (parentView.bounds.width * 0.50) - buttonSpacing, height: buttonHeight), element: elements.leftTrigger)
-            leftTriggerButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleRightMargin]
-            parentView.addSubview(leftTriggerButton)
-            
-            rightTriggerButton = VgcButton(frame: CGRect(x: (parentView.bounds.width * 0.50), y:  buttonHeight + buttonSpacing, width: parentView.bounds.width * 0.50, height: buttonHeight), element: elements.rightTrigger)
-            rightTriggerButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin]
-            rightTriggerButton.valueLabel.textAlignment = .Left
-            parentView.addSubview(rightTriggerButton)
-            
-            /*
-            // FOR TESTING CUSTOM ELEMENTS
-            centerTriggerButton = VgcButton(frame: CGRect(x: (parentView.bounds.width * 0.25), y:  buttonHeight + buttonSpacing, width: parentView.bounds.width * 0.50, height: buttonHeight), element: custom[CustomElementType.FiddlestickX.rawValue]!)
-            centerTriggerButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin]
-            centerTriggerButton.valueLabel.textAlignment = .Center
-            parentView.addSubview(centerTriggerButton)
-            */
-            
-            var yPosition = (buttonHeight * 2) + (buttonSpacing * 2)
-            
-            let padHeightWidth = parentView.bounds.size.width * 0.50
-            let abxyButtonPad = VgcAbxyButtonPad(frame: CGRect(x: (parentView.bounds.size.width * 0.50), y: yPosition, width: padHeightWidth, height: padHeightWidth))
-            abxyButtonPad.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleRightMargin]
-            parentView.addSubview(abxyButtonPad)
-            
-            
-            let dpadPad = VgcStick(frame: CGRect(x: 0, y: yPosition, width: padHeightWidth - buttonSpacing, height: padHeightWidth), xElement: elements.dpadXAxis, yElement: elements.dpadYAxis)
-            dpadPad.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleRightMargin, UIViewAutoresizing.FlexibleTopMargin]
-            dpadPad.nameLabel.text = "dpad"
-            dpadPad.valueLabel.textAlignment = .Right
-            dpadPad.layer.cornerRadius = 0
-            dpadPad.controlView.layer.cornerRadius = 0
-            parentView.addSubview(dpadPad)
-            
-            yPosition += padHeightWidth + 10
-            
-            let leftThumbstickPad = VgcStick(frame: CGRect(x: marginSize, y: yPosition, width: stickSideSize , height: stickSideSize), xElement: elements.leftThumbstickXAxis, yElement: elements.leftThumbstickYAxis)
-            leftThumbstickPad.nameLabel.text = "L Thumb"
-            parentView.addSubview(leftThumbstickPad)
-            
-            let rightThumbstickPad = VgcStick(frame: CGRect(x: parentView.bounds.size.width - stickSideSize - marginSize, y: yPosition, width: stickSideSize, height: stickSideSize), xElement: elements.rightThumbstickXAxis, yElement: elements.rightThumbstickYAxis)
-            rightThumbstickPad.nameLabel.text = "R Thumb"
-            parentView.addSubview(rightThumbstickPad)
-            
-            
-            let cameraBackground = UIView(frame: CGRect(x: parentView.bounds.size.width * 0.50 - 25, y: parentView.bounds.size.height - 49, width: 50, height: 40))
-            cameraBackground.backgroundColor = UIColor.lightGrayColor()
-            cameraBackground.layer.cornerRadius = 5
-            parentView.addSubview(cameraBackground)
-            
-            let cameraImage = UIImageView(image: UIImage(named: "camera"))
-            cameraImage.contentMode = .Center
-            cameraImage.frame = CGRect(x: parentView.bounds.size.width * 0.50 - 25, y: parentView.bounds.size.height - 49, width: 50, height: 40)
-            cameraImage.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleTopMargin]
-            cameraImage.userInteractionEnabled = true
-            parentView.addSubview(cameraImage)
-            
-            let gr = UITapGestureRecognizer(target: vc, action: "displayPhotoPicker:")
-            cameraImage.gestureRecognizers = [gr]
-            
-            playerIndexLabel = UILabel(frame: CGRect(x: parentView.bounds.size.width * 0.50 - 50, y: parentView.bounds.size.height - 75, width: 100, height: 25))
-            playerIndexLabel.text = "Player: 0"
-            playerIndexLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleRightMargin, UIViewAutoresizing.FlexibleTopMargin]
-            playerIndexLabel.textColor = UIColor.grayColor()
-            playerIndexLabel.textAlignment = .Center
-            playerIndexLabel.font = UIFont(name: playerIndexLabel.font.fontName, size: 14)
-            parentView.addSubview(playerIndexLabel)
-            
-            
-            // This is hidden because it is only used to display the keyboard below in playerTappedToShowKeyboard
-            keyboardTextField = UITextField(frame: CGRect(x: -10, y: parentView.bounds.size.height + 30, width: 10, height: 10))
-            keyboardTextField.addTarget(self, action: "textFieldDidChange:", forControlEvents: .EditingChanged)
-            keyboardTextField.autocorrectionType = .No
-            parentView.addSubview(keyboardTextField)
-            
-            
-            // Set iCadeControllerMode when testing the use of an iCade controller
-            // Instead of displaying the button to the user to display an on-screen keyboard
-            // for string input, we make the hidden keyboardTextField the first responder so
-            // it receives controller input
-            if VgcManager.iCadeControllerMode != .Disabled {
-                
-                keyboardTextField.becomeFirstResponder()
-                
-            } else {
-                
-                //            let keyboardLabel = UIButton(frame: CGRect(x: marginSize, y: parentView.bounds.size.height - 46, width: 100, height: 44))
-                //            keyboardLabel.backgroundColor = UIColor(white: CGFloat(0.76), alpha: 1.0)
-                //            keyboardLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleTopMargin]
-                //            keyboardLabel.setTitle("Keyboard", forState: .Normal)
-                //            keyboardLabel.setTitleColor(UIColor.blackColor(), forState: .Normal)
-                //            keyboardLabel.titleLabel!.font = UIFont(name: keyboardLabel.titleLabel!.font.fontName, size: 18)
-                //            keyboardLabel.layer.cornerRadius = 2
-                //            keyboardLabel.addTarget(self, action: "playerTappedToShowKeyboard:", forControlEvents: .TouchUpInside)
-                //            keyboardLabel.userInteractionEnabled = true
-                //            parentView.addSubview(keyboardLabel)
-                
-                let keyboardBackground = UIView(frame: CGRect(x: marginSize, y: parentView.bounds.size.height - 49, width: 89, height: 42))
-                keyboardBackground.backgroundColor = UIColor.lightGrayColor()
-                keyboardBackground.layer.cornerRadius = 5
-                parentView.addSubview(keyboardBackground)
-                
-                let keyboardImage = UIImageView(image: UIImage(named: "keyboard"))
-                keyboardImage.contentMode = .ScaleAspectFill
-                keyboardImage.frame = CGRect(x: marginSize - 6, y: parentView.bounds.size.height - 55, width: 100, height: 42)
-                keyboardImage.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleTopMargin]
-                keyboardImage.userInteractionEnabled = true
-                parentView.addSubview(keyboardImage)
-                
-                let gr = UITapGestureRecognizer(target: self, action: "playerTappedToShowKeyboard:")
-                keyboardImage.gestureRecognizers = [gr]
-                
-            }
-            
-            /* Uncomment to sample software-based controller pause behavior, and comment out camera image
-            above since the two icons occupy the same space.
-            
-            let pauseButtonSize = CGFloat(64.0)
-            let pauseButtonLabel = UIButton(frame: CGRect(x: (parentView.bounds.size.width * 0.50) - (pauseButtonSize * 0.50), y: parentView.bounds.size.height - (parentView.bounds.size.height * 0.15), width: pauseButtonSize, height: pauseButtonSize))
-            pauseButtonLabel.backgroundColor = UIColor(white: CGFloat(0.76), alpha: 1.0)
-            pauseButtonLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleTopMargin]
-            pauseButtonLabel.setTitle("||", forState: .Normal)
-            pauseButtonLabel.setTitleColor(UIColor.blackColor(), forState: .Normal)
-            pauseButtonLabel.titleLabel!.font = UIFont(name: pauseButtonLabel.titleLabel!.font.fontName, size: 35)
-            pauseButtonLabel.layer.cornerRadius = 10
-            pauseButtonLabel.addTarget(self, action: "playerTappedToPause:", forControlEvents: .TouchUpInside)
-            pauseButtonLabel.userInteractionEnabled = true
-            parentView.addSubview(pauseButtonLabel)
-            */
-            
-            let motionLabel = UILabel(frame: CGRect(x: parentView.bounds.size.width - 63, y: parentView.bounds.size.height - 58, width: 50, height: 25))
-            motionLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleTopMargin]
-            motionLabel.text = "Motion"
-            motionLabel.textAlignment = .Center
-            motionLabel.textColor = UIColor.whiteColor()
-            //motionLabel.backgroundColor = UIColor.redColor()
-            motionLabel.font = UIFont(name: motionLabel.font.fontName, size: 10)
-            parentView.addSubview(motionLabel)
-            
-            #if !(os(tvOS))
-                motionSwitch = UISwitch(frame:CGRect(x: parentView.bounds.size.width - 63, y: parentView.bounds.size.height - 37, width: 45, height: 30))
-                motionSwitch.on = false
-                //motionSwitch.setOn(true, animated: false);
-                motionSwitch.addTarget(self, action: "motionSwitchDidChange:", forControlEvents: .ValueChanged);
-                motionSwitch.backgroundColor = UIColor.lightGrayColor()
-                motionSwitch.layer.cornerRadius = 15
-                parentView.addSubview(motionSwitch);
-            #endif
-            
-        } else {
-            
-            marginSize = 10
-            
-            parentView.backgroundColor = UIColor.blackColor()
-            
-            let dpadSize = parentView.bounds.size.height * 0.50
-            let lightBlackColor = UIColor.init(red: 0.08, green: 0.08, blue: 0.08, alpha: 1.0)
-            
-            let leftThumbstickPad = VgcStick(frame: CGRect(x: (parentView.bounds.size.width - dpadSize) * 0.50, y: 24, width: dpadSize, height: parentView.bounds.size.height * 0.50), xElement: elements.dpadXAxis, yElement: elements.dpadYAxis)
-            leftThumbstickPad.nameLabel.text = "dpad"
-            leftThumbstickPad.nameLabel.textColor = UIColor.lightGrayColor()
-            leftThumbstickPad.nameLabel.font = UIFont(name: leftThumbstickPad.nameLabel.font.fontName, size: 15)
-            leftThumbstickPad.valueLabel.textColor = UIColor.lightGrayColor()
-            leftThumbstickPad.valueLabel.font = UIFont(name: leftThumbstickPad.nameLabel.font.fontName, size: 15)
-            leftThumbstickPad.backgroundColor = lightBlackColor
-            leftThumbstickPad.controlView.backgroundColor = lightBlackColor
-            parentView.addSubview(leftThumbstickPad)
-            
-            let buttonHeight = parentView.bounds.size.height * 0.20
-            
-            let aButton = VgcButton(frame: CGRect(x: 0, y: parentView.bounds.size.height - (buttonHeight * 2) - 20, width: (parentView.bounds.width) - buttonSpacing, height: buttonHeight), element: elements.buttonA)
-            aButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleRightMargin]
-            aButton.nameLabel.font = UIFont(name: aButton.nameLabel.font.fontName, size: 40)
-            aButton.valueLabel.font = UIFont(name: aButton.valueLabel.font.fontName, size: 20)
-            aButton.baseGrayShade = 0.08
-            aButton.nameLabel.textColor = UIColor.lightGrayColor()
-            aButton.valueLabel.textColor = UIColor.lightGrayColor()
-            parentView.addSubview(aButton)
-            
-            let xButton = VgcButton(frame: CGRect(x: 0, y: parentView.bounds.size.height - buttonHeight - 10, width: parentView.bounds.width, height: buttonHeight), element: elements.buttonX)
-            xButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin]
-            xButton.valueLabel.textAlignment = .Right
-            xButton.nameLabel.font = UIFont(name: xButton.nameLabel.font.fontName, size: 40)
-            xButton.valueLabel.font = UIFont(name: xButton.valueLabel.font.fontName, size: 20)
-            xButton.baseGrayShade = 0.08
-            xButton.nameLabel.textColor = UIColor.lightGrayColor()
-            xButton.valueLabel.textColor = UIColor.lightGrayColor()
-            parentView.addSubview(xButton)
-            
-        }
+        let leftThumbstickPad = VgcStick(frame: CGRect(x: (parentView.bounds.size.width - dpadSize) * 0.50, y: 24, width: dpadSize, height: parentView.bounds.size.height * 0.50), xElement: elements.dpadXAxis, yElement: elements.dpadYAxis)
+        leftThumbstickPad.nameLabel.text = "dpad"
+        leftThumbstickPad.nameLabel.textColor = UIColor.lightGrayColor()
+        leftThumbstickPad.nameLabel.font = UIFont(name: leftThumbstickPad.nameLabel.font.fontName, size: 15)
+        leftThumbstickPad.valueLabel.textColor = UIColor.lightGrayColor()
+        leftThumbstickPad.valueLabel.font = UIFont(name: leftThumbstickPad.nameLabel.font.fontName, size: 15)
+        leftThumbstickPad.backgroundColor = lightBlackColor
+        leftThumbstickPad.controlView.backgroundColor = lightBlackColor
+        parentView.addSubview(leftThumbstickPad)
         
+        let buttonHeight = parentView.bounds.size.height * 0.20
+        
+        let aButton = VgcButton(frame: CGRect(x: 0, y: parentView.bounds.size.height - (buttonHeight * 2) - 20, width: (parentView.bounds.width) - buttonSpacing, height: buttonHeight), element: elements.buttonA)
+        aButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleTopMargin, UIViewAutoresizing.FlexibleRightMargin]
+        aButton.nameLabel.font = UIFont(name: aButton.nameLabel.font.fontName, size: 40)
+        aButton.valueLabel.font = UIFont(name: aButton.valueLabel.font.fontName, size: 20)
+        aButton.baseGrayShade = 0.08
+        aButton.nameLabel.textColor = UIColor.lightGrayColor()
+        aButton.valueLabel.textColor = UIColor.lightGrayColor()
+        parentView.addSubview(aButton)
+        
+        let xButton = VgcButton(frame: CGRect(x: 0, y: parentView.bounds.size.height - buttonHeight - 10, width: parentView.bounds.width, height: buttonHeight), element: elements.buttonX)
+        xButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin]
+        xButton.valueLabel.textAlignment = .Right
+        xButton.nameLabel.font = UIFont(name: xButton.nameLabel.font.fontName, size: 40)
+        xButton.valueLabel.font = UIFont(name: xButton.valueLabel.font.fontName, size: 20)
+        xButton.baseGrayShade = 0.08
+        xButton.nameLabel.textColor = UIColor.lightGrayColor()
+        xButton.valueLabel.textColor = UIColor.lightGrayColor()
+        parentView.addSubview(xButton)
+       
         controlOverlay = UIView(frame: CGRect(x: 0, y: 0, width: parentView.bounds.size.width, height: parentView.bounds.size.height))
         controlOverlay.backgroundColor = UIColor.blackColor()
         controlOverlay.alpha = 0.9
@@ -314,7 +141,6 @@ public class CustomPadView: NSObject {
             self.controlOverlay.frame = CGRect(x: 0, y: 0, width: self.parentView.bounds.size.width, height: self.parentView.bounds.size.height)
             }, completion: { finished in
                 self.serviceSelectorView.refresh()
-                if self.motionSwitch != nil { self.motionSwitch.on = false }
         })
     }
     #endif
@@ -396,21 +222,6 @@ public class CustomPadView: NSObject {
         }
         
     }
-    
-    #if !(os(tvOS))
-    func motionSwitchDidChange(sender:UISwitch!) {
-        
-        vgcLogDebug("User modified motion switch: \(sender.on)")
-        
-        if sender.on == true {
-            
-            VgcManager.peripheral.motion.start()
-        } else {
-            VgcManager.peripheral.motion.stop()
-        }
-        
-    }
-    #endif
 }
 
 // Provides a view over the Peripheral control pad that allows the end user to
@@ -656,15 +467,10 @@ class VgcStick: UIView {
         return percentageForce
     }
     
-    // Manage the frequency of updates
-    var lastMotionRefresh: NSDate = NSDate()
-    
     func processTouch(touch: UITouch!) {
         
         if touch!.view == touchesView {
-            
-            // Avoid updating too often
-            if lastMotionRefresh.timeIntervalSinceNow > -(1 / 60) { return } else { lastMotionRefresh = NSDate() }
+        
             
             // Prevent the stick from leaving the view center area
             var newX = touch!.locationInView(self).x
@@ -885,14 +691,7 @@ public class ElementDebugView: UIView {
         titleRegion.addSubview(attachedLabel)
         
         yPosition += labelHeight
-        
-        let supportsMotionLabel = UILabel(frame: CGRect(x: leftMargin, y: yPosition, width: titleRegion.frame.size.width - 50, height: labelHeight))
-        supportsMotionLabel.backgroundColor = UIColor.lightGrayColor()
-        supportsMotionLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth]
-        supportsMotionLabel.text = "Supports Motion: " + "\(controller.deviceInfo.supportsMotion)"
-        supportsMotionLabel.textAlignment = .Left
-        supportsMotionLabel.font = UIFont(name: supportsMotionLabel.font.fontName, size: deviceDetailsFontSize)
-        titleRegion.addSubview(supportsMotionLabel)
+    
         
         // Scrollview allows the element values to scroll vertically, especially important on phones
         scrollView = UIScrollView(frame: CGRect(x: 0, y: titleRegion.bounds.size.height + 10, width: frame.size.width, height: frame.size.height - titleRegion.bounds.size.height - 10))
@@ -970,13 +769,6 @@ public class ElementDebugView: UIView {
         imageElement.value = imageData!
         imageElement.clearValueAfterTransfer = true
         controller.sendElementStateToPeripheral(imageElement)
-        
-        return
-        
-        let element = controller.elements.rightTrigger
-        element.value = 1.0
-        controller.sendElementStateToPeripheral(element)
-        
     }
     
     public func receivedDebugViewTripleTap() {
@@ -987,18 +779,11 @@ public class ElementDebugView: UIView {
         imageElement.clearValueAfterTransfer = true
         controller.sendElementStateToPeripheral(imageElement)
         
-        // Test simple float mode
-        //let rightShoulder = controller.elements.rightShoulder
-        //rightShoulder.value = 1.0
-        //controller.sendElementStateToPeripheral(rightShoulder)
-        //VgcController.sendElementStateToAllPeripherals(rightShoulder)
-        
         // Test string mode
         let keyboard = controller.elements.custom[CustomElementType.Keyboard.rawValue]!
         keyboard.value = "1 2 3 4 5 6 7 8"
         keyboard.value = "Before newline\nAfter newline\n\n\n"
         controller.sendElementStateToPeripheral(keyboard)
-        //VgcController.sendElementStateToAllPeripherals(keyboard)
         
     }
     
