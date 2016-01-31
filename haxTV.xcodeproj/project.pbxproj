@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		870F93981C5E51E70058237C /* CustomPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870F93971C5E51E70058237C /* CustomPadView.swift */; };
 		87750C971C5E4BC000781C8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750C961C5E4BC000781C8D /* AppDelegate.swift */; };
 		87750C991C5E4BC000781C8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750C981C5E4BC000781C8D /* ViewController.swift */; };
 		87750C9C1C5E4BC000781C8D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87750C9A1C5E4BC000781C8D /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		6BEB79770FD4FE9A4B3413A3 /* Pods-haxTV.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-haxTV.debug.xcconfig"; path = "Pods/Target Support Files/Pods-haxTV/Pods-haxTV.debug.xcconfig"; sourceTree = "<group>"; };
+		870F93971C5E51E70058237C /* CustomPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPadView.swift; sourceTree = "<group>"; };
 		87750C931C5E4BC000781C8D /* haxTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = haxTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87750C961C5E4BC000781C8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		87750C981C5E4BC000781C8D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				87750C9D1C5E4BC000781C8D /* Assets.xcassets */,
 				87750C9F1C5E4BC000781C8D /* LaunchScreen.storyboard */,
 				87750CA21C5E4BC000781C8D /* Info.plist */,
+				870F93971C5E51E70058237C /* CustomPadView.swift */,
 			);
 			path = haxTV;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				87750C991C5E4BC000781C8D /* ViewController.swift in Sources */,
+				870F93981C5E51E70058237C /* CustomPadView.swift in Sources */,
 				87750C971C5E4BC000781C8D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
