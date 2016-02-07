@@ -18,7 +18,7 @@ class GamePadViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = UIColor(red: 0.57, green: 0.61, blue: 0.5, alpha: 1.0)
         VgcManager.loggerUseNSLog = true
         VgcManager.startAs(.Peripheral, appIdentifier: "haxtv", includesPeerToPeer: true)
         VgcManager.peripheral.deviceInfo = DeviceInfo(deviceUID: "", vendorName: playerName, attachedToDevice: false, profileType: .MicroGamepad, controllerType: .Software, supportsMotion: false)

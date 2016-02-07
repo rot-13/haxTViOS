@@ -24,10 +24,6 @@ public class CustomPadView: NSObject {
     public var controlOverlay: UIView!
     var controlLabel: UILabel!
     var activityIndicator : UIActivityIndicatorView!
-    var playerIndexLabel: UILabel!
-    var keyboardTextField: UITextField!
-    var keyboardControlView: UIView!
-    var keyboardLabel: UILabel!
     public var flashView: UIImageView!
     
     public var serviceSelectorView: ServiceSelectorView!
@@ -39,35 +35,35 @@ public class CustomPadView: NSObject {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "peripheralDidDisconnect:", name: VgcPeripheralDidDisconnectNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "peripheralDidConnect:", name: VgcPeripheralDidConnectNotification, object: nil)
         
-        parentView.backgroundColor = UIColor.darkGrayColor()
+        configureViews()
+        configureServiceViews()
+    }
+    
+    func configureViews() {
+        let stickSize = parentView.bounds.size.height * 0.80
+        let buttonSize = parentView.bounds.size.height * 0.60
         
+        let leftThumbstickPad = VgcStick(frame: CGRect(x: parentView.bounds.size.width * 0.05, y: parentView.bounds.size.height * 0.1, width: stickSize, height: stickSize), xElement: elements.dpadXAxis, yElement: elements.dpadYAxis)
+        
+        leftThumbstickPad.backgroundColor = UIColor.blackColor()
+        leftThumbstickPad.controlView.backgroundColor = UIColor.grayColor()
+        parentView.addSubview(leftThumbstickPad)
+        
+        let xButton = VgcButton(frame: CGRect(x: parentView.bounds.size.width * 0.95 - buttonSize, y: parentView.bounds.size.height * 0.2, width: buttonSize, height: buttonSize), element: elements.buttonX)
+        xButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin]
+        xButton.nameLabel.font = UIFont(name: xButton.nameLabel.font.fontName, size: 40)
+        xButton.baseGrayShade = 0.08
+        xButton.nameLabel.textColor = UIColor.lightGrayColor()
+        parentView.addSubview(xButton)
+    }
+    
+    func configureServiceViews() {
         flashView = UIImageView(frame: CGRect(x: 0, y: 0, width: parentView.bounds.size.width, height: parentView.bounds.size.height))
-        flashView.backgroundColor = UIColor.redColor()
+        flashView.backgroundColor = UIColor.grayColor()
         flashView.alpha = 0
         flashView.userInteractionEnabled = false
         parentView.addSubview(flashView)
- 
-        parentView.backgroundColor = UIColor.init(red:147, green:158, blue:127, alpha: 1.0)
-        let dpadSize = parentView.bounds.size.height * 0.50
         
-        let leftThumbstickPad = VgcStick(frame: CGRect(x: (parentView.bounds.size.width - dpadSize) * 0.50, y: 24, width: dpadSize, height: parentView.bounds.size.height * 0.50), xElement: elements.dpadXAxis, yElement: elements.dpadYAxis)
- 
-        leftThumbstickPad.backgroundColor = UIColor.redColor()
-        leftThumbstickPad.controlView.backgroundColor = UIColor.blackColor()
-        parentView.addSubview(leftThumbstickPad)
-        
-        let buttonHeight = parentView.bounds.size.height * 0.20
-        
-        let xButton = VgcButton(frame: CGRect(x: 0, y: parentView.bounds.size.height - buttonHeight - 10, width: parentView.bounds.width, height: buttonHeight), element: elements.buttonX)
-        xButton.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleBottomMargin, UIViewAutoresizing.FlexibleLeftMargin, UIViewAutoresizing.FlexibleTopMargin]
-        xButton.valueLabel.textAlignment = .Right
-        xButton.nameLabel.font = UIFont(name: xButton.nameLabel.font.fontName, size: 40)
-        xButton.valueLabel.font = UIFont(name: xButton.valueLabel.font.fontName, size: 20)
-        xButton.baseGrayShade = 0.08
-        xButton.nameLabel.textColor = UIColor.lightGrayColor()
-        xButton.valueLabel.textColor = UIColor.lightGrayColor()
-        parentView.addSubview(xButton)
-       
         controlOverlay = UIView(frame: CGRect(x: 0, y: 0, width: parentView.bounds.size.width, height: parentView.bounds.size.height))
         controlOverlay.backgroundColor = UIColor.blackColor()
         controlOverlay.alpha = 0.9
@@ -75,35 +71,31 @@ public class CustomPadView: NSObject {
         
         controlLabel = UILabel(frame: CGRect(x: 0, y: controlOverlay.bounds.size.height * 0.35, width: controlOverlay.bounds.size.width, height: 25))
         controlLabel.autoresizingMask = [UIViewAutoresizing.FlexibleRightMargin , UIViewAutoresizing.FlexibleBottomMargin]
-        controlLabel.text = "Seeking Centrals..."
+        controlLabel.text = "Searching for games..."
         controlLabel.textAlignment = .Center
         controlLabel.textColor = UIColor.whiteColor()
         controlLabel.font = UIFont(name: controlLabel.font.fontName, size: 20)
         controlOverlay.addSubview(controlLabel)
         
-        activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, controlOverlay.bounds.size.height * 0.40, controlOverlay.bounds.size.width, 50)) as UIActivityIndicatorView
+        activityIndicator = UIActivityIndicatorView(frame: CGRectMake(0, controlOverlay.bounds.size.height * 0.415, controlOverlay.bounds.size.width, 50)) as UIActivityIndicatorView
         activityIndicator.autoresizingMask = [UIViewAutoresizing.FlexibleRightMargin , UIViewAutoresizing.FlexibleBottomMargin]
         activityIndicator.hidesWhenStopped = true
         activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.White
         controlOverlay.addSubview(activityIndicator)
         activityIndicator.startAnimating()
         
-        serviceSelectorView = ServiceSelectorView(frame: CGRectMake(25, controlOverlay.bounds.size.height * 0.50, controlOverlay.bounds.size.width - 50, controlOverlay.bounds.size.height - 200))
+        serviceSelectorView = ServiceSelectorView(frame: CGRectMake(25, controlOverlay.bounds.size.height * 0.55, controlOverlay.bounds.size.width - 50, controlOverlay.bounds.size.height - 200))
         serviceSelectorView.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleRightMargin]
         controlOverlay.addSubview(serviceSelectorView)
-        
-        
     }
     
-     func peripheralDidConnect(notification: NSNotification) {
+    func peripheralDidConnect(notification: NSNotification) {
         vgcLogDebug("Animating control overlay up")
         UIView.animateWithDuration(animationSpeed, delay: 0.0, options: .CurveEaseIn, animations: {
             self.controlOverlay.frame = CGRect(x: 0, y: -self.parentView.bounds.size.height, width: self.parentView.bounds.size.width, height: self.parentView.bounds.size.height)
             }, completion: { finished in
                 
         })
-        
-        
     }
     
     #if !os(tvOS)
@@ -116,70 +108,6 @@ public class CustomPadView: NSObject {
         })
     }
     #endif
-    
-    func playerTappedToShowKeyboard(sender: AnyObject) {
-        
-        if VgcManager.iCadeControllerMode != .Disabled { return }
-        
-        keyboardControlView = UIView(frame: CGRect(x: 0, y: parentView.bounds.size.height, width: parentView.bounds.size.width, height: parentView.bounds.size.height))
-        keyboardControlView.backgroundColor = UIColor.darkGrayColor()
-        parentView.addSubview(keyboardControlView)
-        
-        let dismissKeyboardGR = UITapGestureRecognizer(target: self, action:Selector("dismissKeyboard"))
-        keyboardControlView.gestureRecognizers = [dismissKeyboardGR]
-        
-        keyboardLabel = UILabel(frame: CGRect(x: 0, y: 0, width: keyboardControlView.bounds.size.width, height: keyboardControlView.bounds.size.height * 0.60))
-        keyboardLabel.text = ""
-        keyboardLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleRightMargin, UIViewAutoresizing.FlexibleTopMargin]
-        keyboardLabel.textColor = UIColor.whiteColor()
-        keyboardLabel.textAlignment = .Center
-        keyboardLabel.font = UIFont(name: keyboardLabel.font.fontName, size: 40)
-        keyboardLabel.adjustsFontSizeToFitWidth = true
-        keyboardLabel.numberOfLines = 5
-        keyboardControlView.addSubview(keyboardLabel)
-        
-        UIView.animateWithDuration(animationSpeed, delay: 0.0, options: .CurveEaseIn, animations: {
-            self.keyboardControlView.frame = self.parentView.bounds
-            }, completion: { finished in
-        })
-        
-        keyboardTextField.becomeFirstResponder()
-        
-    }
-    
-    func dismissKeyboard() {
-        
-        keyboardTextField.resignFirstResponder()
-        UIView.animateWithDuration(animationSpeed, delay: 0.0, options: .CurveEaseIn, animations: {
-            self.keyboardControlView.frame = CGRect(x: 0, y: self.parentView.bounds.size.height, width: self.parentView.bounds.size.width, height: self.parentView.bounds.size.height)
-            }, completion: { finished in
-        })
-    }
-    
-    func textFieldDidChange(sender: AnyObject) {
-        
-        if VgcManager.iCadeControllerMode != .Disabled {
-            
-            vgcLogDebug("Sending iCade character: \(keyboardTextField.text) using iCade mode: \(VgcManager.iCadeControllerMode.description)")
-            
-            var element: Element!
-            var value: Int
-            (element, value) = VgcManager.iCadePeripheral.elementForCharacter(keyboardTextField.text!, controllerElements: elements)
-            keyboardTextField.text = ""
-            if element == nil { return }
-            element.value = value
-            VgcManager.peripheral.sendElementState(element)
-            
-        } else {
-            
-            keyboardLabel.text = keyboardTextField.text!
-            VgcManager.elements.custom[CustomElementType.Keyboard.rawValue]!.value = keyboardTextField.text!
-            VgcManager.peripheral.sendElementState(VgcManager.elements.custom[CustomElementType.Keyboard.rawValue]!)
-            keyboardTextField.text = ""
-            
-        }
-        
-    }
 }
 
 // Provides a view over the Peripheral control pad that allows the end user to
@@ -244,7 +172,6 @@ class VgcButton: UIView {
     
     let element: Element!
     var nameLabel: UILabel!
-    var valueLabel: UILabel!
     var _baseGrayShade: Float = 0.76
     var baseGrayShade: Float {
         get {
@@ -266,7 +193,6 @@ class VgcButton: UIView {
     }
     
     init(frame: CGRect, element: Element) {
-        
         self.element = element
         
         super.init(frame: frame)
@@ -275,19 +201,10 @@ class VgcButton: UIView {
         
         nameLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         nameLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight]
-        nameLabel.text = element.name
+        nameLabel.text = "Kick"
         nameLabel.textAlignment = .Center
         nameLabel.font = UIFont(name: nameLabel.font.fontName, size: 20)
         self.addSubview(nameLabel)
-        
-        valueLabel = UILabel(frame: CGRect(x: 10, y: frame.size.height * 0.70, width: frame.size.width - 20, height: frame.size.height * 0.30))
-        valueLabel.autoresizingMask = [UIViewAutoresizing.FlexibleWidth , UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleTopMargin]
-        valueLabel.text = "0.0"
-        valueLabel.textAlignment = .Center
-        valueLabel.font = UIFont(name: valueLabel.font.fontName, size: 10)
-        valueLabel.textAlignment = .Right
-        self.addSubview(valueLabel)
-        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -303,51 +220,24 @@ class VgcButton: UIView {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        
-        let touch = touches.first
-        
-        // If 3d touch is not supported, just send a "1" value
-        if (self.traitCollection.forceTouchCapability == .Available) {
-            element.value = self.percentageForce(touch!)
-            valueLabel.text = "\(element.value)"
-            let colorValue = CGFloat(baseGrayShade - (element.value as! Float / 10))
-            self.backgroundColor = UIColor(red: colorValue, green: colorValue, blue: colorValue, alpha: 1)
-        } else {
-            element.value = 1.0
-            valueLabel.text = "\(element.value)"
-            self.backgroundColor = UIColor(red: 0.30, green: 0.30, blue: 0.30, alpha: 1)
-        }
+        element.value = 1.0
+        self.backgroundColor = UIColor(red: 0.30, green: 0.30, blue: 0.30, alpha: 1)
         VgcManager.peripheral.sendElementState(element)
         
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        
-        let touch = touches.first
-        
-        // If 3d touch is not supported, just send a "1" value
-        if (self.traitCollection.forceTouchCapability == .Available) {
-            element.value = self.percentageForce(touch!)
-            valueLabel.text = "\(element.value)"
-            let colorValue = CGFloat(baseGrayShade - (element.value as! Float) / 10)
-            self.backgroundColor = UIColor(red: colorValue, green: colorValue, blue: colorValue, alpha: 1)
-        } else {
-            element.value = 1.0
-            valueLabel.text = "\(element.value)"
-            self.backgroundColor = UIColor(red: 0.30, green: 0.30, blue: 0.30, alpha: 1)
-        }
+        element.value = 1.0
+        self.backgroundColor = UIColor(red: 0.30, green: 0.30, blue: 0.30, alpha: 1)
         
         VgcManager.peripheral.sendElementState(element)
         
     }
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        
         element.value = 0.0
-        valueLabel.text = "\(element.value)"
         VgcManager.peripheral.sendElementState(element)
         self.backgroundColor = UIColor(white: CGFloat(baseGrayShade), alpha: 1.0)
-        
     }
     
 }
@@ -406,8 +296,6 @@ class VgcStick: UIView {
     func processTouch(touch: UITouch!) {
         
         if touch!.view == touchesView {
-        
-            
             // Prevent the stick from leaving the view center area
             var newX = touch!.locationInView(self).x
             var newY = touch!.locationInView(self).y
