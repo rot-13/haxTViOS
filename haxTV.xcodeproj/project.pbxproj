@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		870791731C678E0900EC3350 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870791721C678E0900EC3350 /* MainViewController.swift */; };
 		870F93981C5E51E70058237C /* CustomPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870F93971C5E51E70058237C /* CustomPadView.swift */; };
 		87750C971C5E4BC000781C8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750C961C5E4BC000781C8D /* AppDelegate.swift */; };
 		87750C991C5E4BC000781C8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750C981C5E4BC000781C8D /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		6BEB79770FD4FE9A4B3413A3 /* Pods-haxTV.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-haxTV.debug.xcconfig"; path = "Pods/Target Support Files/Pods-haxTV/Pods-haxTV.debug.xcconfig"; sourceTree = "<group>"; };
+		870791721C678E0900EC3350 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		870F93971C5E51E70058237C /* CustomPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPadView.swift; sourceTree = "<group>"; };
 		87750C931C5E4BC000781C8D /* haxTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = haxTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87750C961C5E4BC000781C8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -42,11 +44,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		870791741C678E1000EC3350 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				870791721C678E0900EC3350 /* MainViewController.swift */,
+				87750C981C5E4BC000781C8D /* ViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		870791751C678E1500EC3350 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				87750C9F1C5E4BC000781C8D /* LaunchScreen.storyboard */,
+				87750C9A1C5E4BC000781C8D /* Main.storyboard */,
+			);
+			name = Storyboards;
+			sourceTree = "<group>";
+		};
+		870791761C678E2300EC3350 /* Stuff */ = {
+			isa = PBXGroup;
+			children = (
+				87750CA21C5E4BC000781C8D /* Info.plist */,
+				87750C9D1C5E4BC000781C8D /* Assets.xcassets */,
+			);
+			name = Stuff;
+			path = haxTV;
+			sourceTree = "<group>";
+		};
+		870791771C678E4D00EC3350 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				870F93971C5E51E70058237C /* CustomPadView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		87750C8A1C5E4BC000781C8D = {
 			isa = PBXGroup;
 			children = (
 				87750C951C5E4BC000781C8D /* haxTV */,
 				87750C941C5E4BC000781C8D /* Products */,
+				870791761C678E2300EC3350 /* Stuff */,
 				E9118637C9EF79AB858C7138 /* Pods */,
 				FE33B39CC18AE43C4D4B6E80 /* Frameworks */,
 			);
@@ -63,13 +102,10 @@
 		87750C951C5E4BC000781C8D /* haxTV */ = {
 			isa = PBXGroup;
 			children = (
+				870791771C678E4D00EC3350 /* Views */,
+				870791751C678E1500EC3350 /* Storyboards */,
+				870791741C678E1000EC3350 /* Controllers */,
 				87750C961C5E4BC000781C8D /* AppDelegate.swift */,
-				87750C981C5E4BC000781C8D /* ViewController.swift */,
-				87750C9A1C5E4BC000781C8D /* Main.storyboard */,
-				87750C9D1C5E4BC000781C8D /* Assets.xcassets */,
-				87750C9F1C5E4BC000781C8D /* LaunchScreen.storyboard */,
-				87750CA21C5E4BC000781C8D /* Info.plist */,
-				870F93971C5E51E70058237C /* CustomPadView.swift */,
 			);
 			path = haxTV;
 			sourceTree = "<group>";
@@ -126,6 +162,7 @@
 				TargetAttributes = {
 					87750C921C5E4BC000781C8D = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 32D9U75F5J;
 					};
 				};
 			};
@@ -216,6 +253,7 @@
 				87750C991C5E4BC000781C8D /* ViewController.swift in Sources */,
 				870F93981C5E51E70058237C /* CustomPadView.swift in Sources */,
 				87750C971C5E4BC000781C8D /* AppDelegate.swift in Sources */,
+				870791731C678E0900EC3350 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,10 +365,13 @@
 			baseConfigurationReference = 6BEB79770FD4FE9A4B3413A3 /* Pods-haxTV.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = haxTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rot13.haxtvios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -339,10 +380,13 @@
 			baseConfigurationReference = A3EF08FA1489149F9EE94B09 /* Pods-haxTV.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = haxTV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rot13.haxtvios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
