@@ -10,8 +10,10 @@ import UIKit
 import VirtualGameController
 import GameController
 
-class ViewController: UIViewController {
+class GamePadViewController: UIViewController {
     
+    var playerName: String!
+    var playerAvatar: String!
     var peripheralControlPadView: CustomPadView!
 
     override func viewDidLoad() {
@@ -19,7 +21,7 @@ class ViewController: UIViewController {
         
         VgcManager.loggerUseNSLog = true
         VgcManager.startAs(.Peripheral, appIdentifier: "haxtv", includesPeerToPeer: true)
-        VgcManager.peripheral.deviceInfo = DeviceInfo(deviceUID: "", vendorName: "shay", attachedToDevice: false, profileType: .MicroGamepad, controllerType: .Software, supportsMotion: false)
+        VgcManager.peripheral.deviceInfo = DeviceInfo(deviceUID: "", vendorName: playerName, attachedToDevice: false, profileType: .MicroGamepad, controllerType: .Software, supportsMotion: false)
         
         peripheralControlPadView = CustomPadView(vc: self)
         

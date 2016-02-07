@@ -10,7 +10,7 @@
 		870791731C678E0900EC3350 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870791721C678E0900EC3350 /* MainViewController.swift */; };
 		870F93981C5E51E70058237C /* CustomPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870F93971C5E51E70058237C /* CustomPadView.swift */; };
 		87750C971C5E4BC000781C8D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750C961C5E4BC000781C8D /* AppDelegate.swift */; };
-		87750C991C5E4BC000781C8D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750C981C5E4BC000781C8D /* ViewController.swift */; };
+		87750C991C5E4BC000781C8D /* GamePadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87750C981C5E4BC000781C8D /* GamePadViewController.swift */; };
 		87750C9C1C5E4BC000781C8D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87750C9A1C5E4BC000781C8D /* Main.storyboard */; };
 		87750C9E1C5E4BC000781C8D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87750C9D1C5E4BC000781C8D /* Assets.xcassets */; };
 		87750CA11C5E4BC000781C8D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 87750C9F1C5E4BC000781C8D /* LaunchScreen.storyboard */; };
@@ -23,7 +23,7 @@
 		870F93971C5E51E70058237C /* CustomPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomPadView.swift; sourceTree = "<group>"; };
 		87750C931C5E4BC000781C8D /* haxTV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = haxTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87750C961C5E4BC000781C8D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		87750C981C5E4BC000781C8D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		87750C981C5E4BC000781C8D /* GamePadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamePadViewController.swift; sourceTree = "<group>"; };
 		87750C9B1C5E4BC000781C8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		87750C9D1C5E4BC000781C8D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		87750CA01C5E4BC000781C8D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -48,7 +48,7 @@
 			isa = PBXGroup;
 			children = (
 				870791721C678E0900EC3350 /* MainViewController.swift */,
-				87750C981C5E4BC000781C8D /* ViewController.swift */,
+				87750C981C5E4BC000781C8D /* GamePadViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -250,7 +250,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				87750C991C5E4BC000781C8D /* ViewController.swift in Sources */,
+				87750C991C5E4BC000781C8D /* GamePadViewController.swift in Sources */,
 				870F93981C5E51E70058237C /* CustomPadView.swift in Sources */,
 				87750C971C5E4BC000781C8D /* AppDelegate.swift in Sources */,
 				870791731C678E0900EC3350 /* MainViewController.swift in Sources */,

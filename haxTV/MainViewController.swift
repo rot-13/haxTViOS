@@ -32,6 +32,11 @@ class MainViewController: UIViewController {
         let defaults = NSUserDefaults.standardUserDefaults()
         defaults.setObject(nameField.text, forKey: "name")
         defaults.setObject(avatarField.text, forKey: "avatar")
+
+        let vc = GamePadViewController()
+        vc.playerName = nameField.text
+        vc.playerAvatar = avatarField.text
+        presentViewController(vc, animated: true, completion: nil)
     }
 }
 
